@@ -51,9 +51,9 @@ public class MyBCIGameObj : MonoBehaviour, IBCIInteractable
 
     private void OnMouseDown()
     {
-        //JSplugin.CallFunction();
-        //print(JSplugin.GetNumberValue().ToString());
-       // CallFunction();
+        //Debug.Log("OnMouseDown");
+        JSplugin.Hello();
+        //Application.ExternalCall("Hello");
     }
 
     // Hook this into whatever

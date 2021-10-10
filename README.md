@@ -14,6 +14,8 @@ EEG data string gets chopped and assigned in the same order that the struct vari
 
 The receiver is the System GameObject to which you are sending the eeg data. Other game objects that you want to make bci-interactable can implement an interface and then check the latest eeg data on the listener whenever they need to.
 
+Update frequency is not going to good enough for a multiplayer shooter.
+
 
 ## The Process
 ### Unity

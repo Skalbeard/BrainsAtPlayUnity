@@ -4,6 +4,10 @@ using System.Runtime.InteropServices;
 /// </summary>
 public static class JSplugin
 {
+    [DllImport("__Internal")]
+    public static extern void Hello();
+
+
     // Importing "CallFunction"
     [DllImport("__Internal")]
     public static extern void CallFunction();
