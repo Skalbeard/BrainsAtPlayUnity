@@ -5,22 +5,14 @@ using System.Runtime.InteropServices;
 public static class JSplugin
 {
     [DllImport("__Internal")]
-    public static extern void Hello();
+    public static extern void SendToServer();
 
+    [DllImport("__Internal")]
+    public static extern void SendStringToServer(string text);
 
-    // Importing "CallFunction"
     [DllImport("__Internal")]
-    public static extern void CallFunction();
-    // Importing "PassTextParam"
+    public static extern void SendFloatToServer(float num);
+
     [DllImport("__Internal")]
-    public static extern void PassTextParam(string text);
-    // Importing "PassNumberParam"
-    [DllImport("__Internal")]
-    public static extern void PassNumberParam(int number);
-    // Importing "GetTextValue"
-    [DllImport("__Internal")]
-    public static extern string GetTextValue();
-    // Importing "GetNumberValue"
-    [DllImport("__Internal")]
-    public static extern int GetNumberValue();
+    public static extern void SendNumToServer(int num);
 }

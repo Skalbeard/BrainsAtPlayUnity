@@ -12,6 +12,5 @@ public class GameApplication : Singleton<GameApplication>
     // Update is called once per frame
     void Update()
     {
-        //Application.ExternalCall("myFunction");
     }
 }

@@ -1,88 +1,42 @@
 using UnityEngine;
 
-
+// This is an adittional component that we add to whatever needs to listen to biofeedback data
+// Currently it is a specific impleentation for the player character as it gets the CharacterSkinController and caches parameters specific to this game.
+// Generally how you would want to go about it, is create your own BciObj class, attach an interface to it, then give it parameters that it wants to cache and run logic on.
+// You can of course also just attach the BCIInteractable interface straight onto your game object class, depending on your implementation and intended scope.
 public class MyBCIGameObj : MonoBehaviour, IBCIInteractable
 {
-
-    //When the mouse hovers over the GameObject, it turns to this color (red)
-    Color m_MouseOverColor = Color.red;
-
-    //This stores the GameObject’s original color
-    Color m_OriginalColor;
-
-    //Get the GameObject’s mesh renderer to access the GameObject’s material and color
-    MeshRenderer m_Renderer;
-
-    CharacterSkinController control;
+    private CharacterSkinController control;
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Start block");
-        //Physics.queriesHitTriggers = true;
-
-        //Fetch the mesh renderer component from the GameObject
-        //m_Renderer = GetComponent<MeshRenderer>();
-        //Fetch the original color of the GameObject
-        //m_OriginalColor = m_Renderer.material.color;
         control = GetComponent<CharacterSkinController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         ReactToBCI();
     }
 
-
-    private void OnMouseOver()
-    {
-        //Debug.Log("Mouse is over GameObject.");
-        //ReactToStuff(true);
-    }
-
-    void OnMouseExit()
-    {
-        //The mouse is no longer hovering over the GameObject so output this message each frame
-        //Debug.Log("Mouse is no longer on GameObject.");
-        //ReactToStuff(false);
-    }
-
+    // send
     private void OnMouseDown()
     {
-        //Debug.Log("OnMouseDown");
-        JSplugin.Hello();
-        //Application.ExternalCall("Hello");
+        SendEventToWeb();
     }
 
-    // Hook this into whatever
-    private void ReactToStuff(bool toggle)
+    public void SendEventToWeb()
     {
-        //m_Renderer.material.color = toggle == true ?
-           // m_MouseOverColor
-            //: m_OriginalColor;
+        DataSender.Instance.SendToJS();
     }
-
-    public void CalledFromJS(float number)
-    {
-        print("this was called from the JS side with a parameter: " + number.ToString());
-    }
-
-   //public void HelloCube()
-   //{
-   //    print("hello cube");
-   //    //ReactToStuff(true);
-   //}
 
     public void ReactToBCI()
     {
-        print("bcigameobj ReactToBCI: " + BCIDataListener.currentData.coherence);
-        control.ReactToBCI(BCIDataListener.currentData.coherence);
-        //string displaydata =
-        //    "alpha: " + BCIDataListener.Instance.CurrentData.alpha +
-        //    " blink: " + BCIDataListener.Instance.CurrentData.blink +
-        //    " coherence: " + BCIDataListener.Instance.CurrentData.coherence;
-        //Debug.Log(displaydata);
+        print("bcigameobj ReactToBCI coherence data: " + BCIDataListener.CurrentData.coherence
+            + " and blink data: " + BCIDataListener.CurrentData.blink
+            + " and focus data: " + BCIDataListener.CurrentData.focus);
+        control.ChangeFacialExpression(BCIDataListener.CurrentData.focus);
+        if (BCIDataListener.CurrentData.blink > 0.1f)
+            control.Blink();
     }
 }

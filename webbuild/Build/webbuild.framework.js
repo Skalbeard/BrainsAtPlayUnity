@@ -1300,7 +1300,7 @@ function _emscripten_asm_const_ii(code, a0) {
  return ASM_CONSTS[code](a0);
 }
 STATIC_BASE = GLOBAL_BASE;
-STATICTOP = STATIC_BASE + 3061392;
+STATICTOP = STATIC_BASE + 3061536;
 __ATINIT__.push({
  func: (function() {
   __GLOBAL__sub_I_AccessibilityScriptingClasses_cpp();
@@ -3354,30 +3354,12 @@ __ATINIT__.push({
   ___emscripten_environ_constructor();
  })
 });
-var STATIC_BUMP = 3061392;
+var STATIC_BUMP = 3061536;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 var tempDoublePtr = STATICTOP;
 STATICTOP += 16;
 assert(tempDoublePtr % 8 == 0);
-function _CallFunction() {
- window.alert("You called a function from this plugin!");
-}
-function _GetNumberValue() {
- return 2020;
-}
-function _GetTextValue() {
- var textToPass = "You got this text from the plugin";
- var bufferSize = lengthBytesUTF8(textToPass) + 1;
- var buffer = _malloc(bufferSize);
- stringToUTF8(textToPass, buffer, bufferSize);
- return buffer;
-}
-function _Hello() {
- window.alert("Hello, world!");
- window.unityCallback("1");
- window.unityCallback();
-}
 function _JS_Cursor_SetImage(ptr, length) {
  var binary = "";
  for (var i = 0; i < length; i++) binary += String.fromCharCode(HEAPU8[ptr + i]);
@@ -3691,12 +3673,17 @@ function _JS_SystemInfo_HasFullscreen() {
 function _JS_SystemInfo_HasWebGL() {
  return Module.SystemInfo.hasWebGL;
 }
-function _PassNumberParam(number) {
- window.alert("The number is: " + number);
+function _SendFloatToServer(num) {
+ window.PassUnityEvent(num);
 }
-function _PassTextParam(text) {
- var convertedText = Pointer_stringify(text);
- window.alert("You've passed the text: " + convertedText);
+function _SendNumToServer(num) {
+ window.PassUnityEvent(num);
+}
+function _SendStringToServer(str) {
+ window.PassUnityEvent(Pointer_stringify(str));
+}
+function _SendToServer() {
+ window.PassUnityEvent();
 }
 function ___atomic_compare_exchange_8(ptr, expected, desiredl, desiredh, weak, success_memmodel, failure_memmodel) {
  var pl = HEAP32[ptr >> 2];
@@ -15684,8 +15671,8 @@ function nullFunc_vjji(x) {
  err("Build with ASSERTIONS=2 for more info.");
  abort(x);
 }
-Module["wasmTableSize"] = 85080;
-Module["wasmMaxTableSize"] = 85080;
+Module["wasmTableSize"] = 85084;
+Module["wasmMaxTableSize"] = 85084;
 function invoke_dddi(index, a1, a2, a3) {
  var sp = stackSave();
  try {
@@ -19258,10 +19245,6 @@ Module.asmLibraryArg = {
  "invoke_vjii": invoke_vjii,
  "invoke_vjiiii": invoke_vjiiii,
  "invoke_vjji": invoke_vjji,
- "_CallFunction": _CallFunction,
- "_GetNumberValue": _GetNumberValue,
- "_GetTextValue": _GetTextValue,
- "_Hello": _Hello,
  "_JS_Cursor_SetImage": _JS_Cursor_SetImage,
  "_JS_Cursor_SetShow": _JS_Cursor_SetShow,
  "_JS_Eval_ClearInterval": _JS_Eval_ClearInterval,
@@ -19300,8 +19283,10 @@ Module.asmLibraryArg = {
  "_JS_SystemInfo_HasCursorLock": _JS_SystemInfo_HasCursorLock,
  "_JS_SystemInfo_HasFullscreen": _JS_SystemInfo_HasFullscreen,
  "_JS_SystemInfo_HasWebGL": _JS_SystemInfo_HasWebGL,
- "_PassNumberParam": _PassNumberParam,
- "_PassTextParam": _PassTextParam,
+ "_SendFloatToServer": _SendFloatToServer,
+ "_SendNumToServer": _SendNumToServer,
+ "_SendStringToServer": _SendStringToServer,
+ "_SendToServer": _SendToServer,
  "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv,
  "___atomic_compare_exchange_8": ___atomic_compare_exchange_8,
  "___atomic_fetch_add_8": ___atomic_fetch_add_8,

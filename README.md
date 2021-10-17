@@ -1,36 +1,47 @@
-This Applet is intended to illustrate a 'hello world' type of interaction built between the Brains@Play webserver and a Unity build integrated into the Applet framework or standalone, so that anyone can build whatever they want in Unity and hook it up with their own version of this applet.
-
-There are two parts to this. The web javascript side and the Unity c# side. You might come from a web or unity background or you might already be versed enough in both. Regardless I will describe the process from these two perspectives.
+This Applet implements basic two way communication between an integrated Unity WebGL build and the B@P library API.
 
 
-## Web JS
-The example applet uses only some of the available BCI data that you can hook up to your implementation. You can find all of the meta and raw data functions available to you from the BCI processing layer in the DataAtlas.js. The data sent over is a stringified array of floats. You can find all of the meta and raw data functions available to you from the BCI processing layer in the DataAtlas.js.
+## The environment and how everything connects
+This Applet uses only some of the available EEG/whatever other kind of biofeedback features that you can hook up to your game implementation. These are hooked in from the Atlas.
+
+To communicate a feature data variable to the Unity game, the applet has to send a message to the Unity build, addressing it to a GameObject in the hierarchy to which the BCIDataListener is attached to. f.e.:
+	"this.props.instance.SendMessage('GameApplication', 'UpdateBlink', blink);"
+If you want to rename the game object in the project hierarchy, this call has to reflect that.
+The second parameter is the function name that updates the Unity game logic and also has to correspond by name exactly.
+Third parameter is the value for that function.
+
+Look for the currently supported feature list in EEGData.cs in the Unity project.
+
+If you want to hook in and use another feature from the Atlas, you have to do the following:
+1) Add it to the EEGData.cs data struct.
+2) Add the function to process the feature in Unity BCIListener.cs.
+3) In the settings.js, add definitions to the feature you want to send to Unity to the commands and edges list.
 
 
+BCIReceiver implements a platform dependent interface that either listens to messages coming from the server.
+
+DataSender is the script that sends event from Unity to the WEB server.
+To add adittional send methods you have to do the following:
+1) Add a function callback to the .jslib plugin file. This will compile during the build and you will then use JSPlugin.cs to call methods from .jslib to invoke events on the web window context when running the build.
+2) Add a call to the JSPlugin.cs.
+3) Add the method to the Unity.js window context.
+
+
+## The build Process
 ## Unity
-BCIReceiver implements a platform dependent interface that either listens to messages coming from the server or reads the socket that the server is sending the data to in the case of standalone windows build.
-
-EEG data string gets chopped and assigned in the same order that the struct variables are declared. Be careful about implementing new data because of this. The Edata has to be ordered the same way on both the Unity and the Applet.
-
-The receiver is the System GameObject to which you are sending the eeg data. Other game objects that you want to make bci-interactable can implement an interface and then check the latest eeg data on the listener whenever they need to.
-
-Update frequency is not going to good enough for a multiplayer shooter.
-
-
-## The Process
-### Unity
-1. Download the UnityBrainsAtPlayTemplate project.
+1. Clone the UnityBrainsAtPlayTemplate project.
 2. Create your scene. Make sure that there is one game object in your scene that has the BCIReceiver on it.
 3. Create your own objects and scripts and refer to the BCIReceiver instance for eeg data when you need to.
 4. Feel free to create your own architectures the way you see fit as this is just an example.
 
+
 ### Applet
 1. Copy the Unity Applet template.
 2. Build your Unity project. (make sure the platform is set to webgl)
-3. Copy over the Build and TemplateData folders from your build into the template.
-4. Open the webbuild.loader.js file and make sure that the very top line 'function createUnityInstance' has the word 'export' in front of it. Then go to line 207 where canvas object is created. Some versions of Unity wont have the gl rendercontext object defined here, so right before the line that goes 'if (canvas) {...}', copy in this line: 'let gl, glVersion;'
-5. Now open up the UnityApplet.js and go to the init() function, find where webbuild calls createUnityInstance(). In its' lambda call we start a DataUpdate() method which fetches all the eeg data from the Atlas and sends it over to your gameobject that has the BCIReceiver script on it.
-6. In the SendMessage call, you have to make sure that the first parameter is the name of that game object ans not the script. And then the UpdateData method call is universal for your BCIReceiver. Unless you renamed it.
+3. Copy over the Build and TemplateData folders from your build into the template. Make sure you do not delete the buildconfig.js.
+4. Open the webbuild.loader.js file and make sure that the very top line 'function createUnityInstance' has the word 'export' in front of it. Then go to line 180 where canvas object is created. Some versions of Unity wont have the gl rendercontext object defined here, so right before the line that goes 'if (canvas) {...}', copy in this line: 'let gl, glVersion;'
+5. Now open up the UnityApplet.js and go to the init() function, find where webbuild calls createUnityInstance(). In its' callback we start an animate method which fetches all the eeg data from the Atlas and sends it over to your gameobject that has the BCIReceiver script on it.
+6. In the SendMessage call, you have to make sure that the first parameter is the name of that game object ans not the script. And then the corresponding update method call is universal for your BCIReceiver. Unless you renamed it.
 
 
 ## Notes

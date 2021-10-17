@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 
 public class CharacterSkinController : MonoBehaviour
 {
@@ -14,13 +14,11 @@ public class CharacterSkinController : MonoBehaviour
     public EyePosition eyeState;
 
 
-
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         characterMaterials = GetComponentsInChildren<Renderer>();
-        
     }
 
     // Update is called once per frame
@@ -28,51 +26,45 @@ public class CharacterSkinController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            //ChangeMaterialSettings(0);
             ChangeEyeOffset(EyePosition.normal);
             ChangeAnimatorIdle("normal");
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            //ChangeMaterialSettings(1);
             ChangeEyeOffset(EyePosition.angry);
             ChangeAnimatorIdle("angry");
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            //ChangeMaterialSettings(2);
             ChangeEyeOffset(EyePosition.happy);
             ChangeAnimatorIdle("happy");
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            //ChangeMaterialSettings(3);
             ChangeEyeOffset(EyePosition.dead);
             ChangeAnimatorIdle("dead");
         }
     }
 
-    public void ReactToBCI(float coherence)
+    public void ChangeFacialExpression(float featureValue)
     {
-        if (coherence != 0.0f)
+        if (featureValue != 0.0f)
         {
-            if (coherence < 0.6f)
+            if (featureValue < 0.6f)
             {
                 if (eyeState != EyePosition.angry)
-                {
-                   // ChangeEyeOffset(EyePosition.angry);
                     ChangeAnimatorIdle("angry");
-                }
 
             }
             else
             {
                 if (eyeState != EyePosition.happy)
-                {
-                   // ChangeEyeOffset(EyePosition.happy);
                     ChangeAnimatorIdle("happy");
-                }
             }
+        }
+        else
+        {
+            ChangeAnimatorIdle("normal");
         }
     }
 
@@ -104,7 +96,7 @@ public class CharacterSkinController : MonoBehaviour
         }
     }
 
-    void ChangeEyeOffset(EyePosition pos)
+    private void ChangeEyeOffset(EyePosition pos)
     {
         Vector2 offset = Vector2.zero;
 
