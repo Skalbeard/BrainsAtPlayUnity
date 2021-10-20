@@ -18,7 +18,7 @@ If you want to hook in and use another feature from the Atlas, you have to do th
 3) In the settings.js, add definitions to the feature you want to send to Unity to the commands and edges list.
 
 
-BCIReceiver implements a platform dependent interface that either listens to messages coming from the server.
+BCIDataListener implements a platform dependent interface that either listens to messages coming from the server.
 
 DataSender is the script that sends event from Unity to the WEB server.
 To add adittional send methods you have to do the following:
@@ -30,8 +30,8 @@ To add adittional send methods you have to do the following:
 ## The build Process
 ## Unity
 1. Clone the UnityBrainsAtPlayTemplate project.
-2. Create your scene. Make sure that there is one game object in your scene that has the BCIReceiver on it.
-3. Create your own objects and scripts and refer to the BCIReceiver instance for eeg data when you need to.
+2. Create your scene. Make sure that there is one game object in your scene that has the BCIDataListener on it.
+3. Create your own objects and scripts and refer to the BCIDataListener instance for eeg data when you need to.
 4. Feel free to create your own architectures the way you see fit as this is just an example.
 
 
@@ -40,8 +40,8 @@ To add adittional send methods you have to do the following:
 2. Build your Unity project. (make sure the platform is set to webgl)
 3. Copy over the Build and TemplateData folders from your build into the template. Make sure you do not delete the buildconfig.js.
 4. Open the webbuild.loader.js file and make sure that the very top line 'function createUnityInstance' has the word 'export' in front of it. Then go to line 180 where canvas object is created. Some versions of Unity wont have the gl rendercontext object defined here, so right before the line that goes 'if (canvas) {...}', copy in this line: 'let gl, glVersion;'
-5. Now open up the UnityApplet.js and go to the init() function, find where webbuild calls createUnityInstance(). In its' callback we start an animate method which fetches all the eeg data from the Atlas and sends it over to your gameobject that has the BCIReceiver script on it.
-6. In the SendMessage call, you have to make sure that the first parameter is the name of that game object ans not the script. And then the corresponding update method call is universal for your BCIReceiver. Unless you renamed it.
+5. Now open up the UnityApplet.js and go to the init() function, find where webbuild calls createUnityInstance(). In its' callback we start an animate method which fetches all the eeg data from the Atlas and sends it over to your gameobject that has the BCIDataListener script on it.
+6. In the SendMessage call, you have to make sure that the first parameter is the name of that game object ans not the script. And then the corresponding update method call is universal for your BCIDataListener. Unless you renamed it.
 
 
 ## Notes
